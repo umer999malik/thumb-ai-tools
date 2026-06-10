@@ -113,3 +113,17 @@ function downloadResult() {
   link.href = resultCanvas.toDataURL('image/png');
   link.click();
 }
+function testTextAPI() {
+  statusText.textContent = 'Connecting to Text API...';
+
+  fetch('https://thumb-ai-backend.vercel.app/api/text')
+    .then(response => response.json())
+    .then(data => {
+      statusText.textContent = data.message;
+      alert(data.message);
+    })
+    .catch(error => {
+      statusText.textContent = 'Text API connection failed.';
+      console.error(error);
+    });
+}
