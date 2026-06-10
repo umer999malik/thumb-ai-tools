@@ -10,7 +10,7 @@ let lastMode = 'layer';
 
 imageInput.addEventListener('change', handleUpload);
 document.getElementById('subjectBtn').addEventListener('click', generateSubjectAI);
-document.getElementById('objectsBtn').addEventListener('click', () => generateLayer('objects'));
+document.getElementById('objectsBtn').addEventListener('click', testTextAPI);
 document.getElementById('backgroundBtn').addEventListener('click', () => generateLayer('background'));
 document.getElementById('downloadBtn').addEventListener('click', downloadResult);
 
