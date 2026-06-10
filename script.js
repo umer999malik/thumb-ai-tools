@@ -105,18 +105,51 @@ function downloadResult() {
   link.click();
 }
 function testBackend() {
-  statusText.textContent = 'Connecting to backend...';
+  if (!loadedImage) {
+    statusText.textContent = 'Please upload a thumbnail first.';
+    return;
+  }
 
-  fetch('https://thumb-ai-backend.vercel.app/api/subject')
+  statusText.textContent = 'Generating subject PNG...';
+
+  const imageBase64 = sourceCanvas.toDataURL('image/png');
+
+  fetch('https://thumb-ai-backend.vercel.app/api/subject', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      imageBase64: imageBase64
+    })
+  })
     .then(response => response.json())
     .then(data => {
-      statusText.textContent = data.message;
-      alert(data.message);
+      if (data.error) {
+        statusText.textContent = 'AI failed: ' + data.error;
+        alert('AI failed: ' + data.error);
+        console.log(data.details);
+        return;
+      }
+
+      const resultImg = new Image();
+      resultImg.onload = () => {
+        resultCanvas.width = resultImg.width;
+        resultCanvas.height = resultImg.height;
+        resultCtx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
+        resultCtx.drawImage(resultImg, 0, 0);
+        lastMode = 'subject';
+        statusText.textContent = 'Subject PNG generated. Click Download PNG to save it.';
+      };
+
+      resultImg.src = data.image;
     })
     .catch(error => {
       statusText.textContent = 'Backend connection failed.';
       alert('Backend connection failed.');
       console.error(error);
+    });
+}
     });
 }
 function capitalize(text) {
