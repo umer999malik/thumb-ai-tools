@@ -8,7 +8,7 @@ let loadedImage = null;
 let lastMode = 'layer';
 
 imageInput.addEventListener('change', handleUpload);
-document.getElementById('subjectBtn').addEventListener('click', () => generateLayer('subject'));
+document.getElementById('subjectBtn').addEventListener('click', testBackend);
 document.getElementById('objectsBtn').addEventListener('click', () => generateLayer('objects'));
 document.getElementById('backgroundBtn').addEventListener('click', () => generateLayer('background'));
 document.getElementById('downloadBtn').addEventListener('click', downloadResult);
