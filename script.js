@@ -104,7 +104,21 @@ function downloadResult() {
   link.href = resultCanvas.toDataURL('image/png');
   link.click();
 }
+function testBackend() {
+  statusText.textContent = 'Connecting to backend...';
 
+  fetch('https://thumb-ai-backend.vercel.app/api/subject')
+    .then(response => response.json())
+    .then(data => {
+      statusText.textContent = data.message;
+      alert(data.message);
+    })
+    .catch(error => {
+      statusText.textContent = 'Backend connection failed.';
+      alert('Backend connection failed.');
+      console.error(error);
+    });
+}
 function capitalize(text) {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
