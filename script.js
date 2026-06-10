@@ -9,9 +9,11 @@ let loadedImage = null;
 let lastMode = 'layer';
 
 imageInput.addEventListener('change', handleUpload);
-document.getElementById('subjectBtn').addEventListener('click', generateSubjectAI);
-document.getElementById('objectsBtn').addEventListener('click', testTextAPI);
-document.getElementById('backgroundBtn').addEventListener('click', () => generateLayer('background'));
+document.getElementById('subjectBtn').addEventListener('click', generateSubject);
+document.getElementById('objectsBtn').addEventListener('click', generateText);
+document.getElementById('backgroundBtn').addEventListener('click', () => {
+  statusText.textContent = 'Background feature is not ready yet.';
+});
 document.getElementById('downloadBtn').addEventListener('click', downloadResult);
 
 function handleUpload(event) {
@@ -22,14 +24,14 @@ function handleUpload(event) {
     return;
   }
 
+  loadedImage = file;
+
   const reader = new FileReader();
 
   reader.onload = () => {
     const img = new Image();
 
     img.onload = () => {
-      loadedImage = img;
-
       setupCanvas(sourceCanvas, img);
       setupCanvas(resultCanvas, img);
 
@@ -38,7 +40,7 @@ function handleUpload(event) {
 
       sourceCtx.drawImage(img, 0, 0, sourceCanvas.width, sourceCanvas.height);
 
-      statusText.textContent = 'Image uploaded. Click Generate Subject.';
+      statusText.textContent = 'Image uploaded. Choose Subject or Text PNG.';
     };
 
     img.src = reader.result;
@@ -54,7 +56,7 @@ function setupCanvas(canvas, img) {
   canvas.height = Math.round(img.height * scale);
 }
 
-function generateSubjectAI() {
+async function generateSubject() {
   if (!loadedImage) {
     statusText.textContent = 'Please upload a thumbnail first.';
     return;
@@ -62,82 +64,80 @@ function generateSubjectAI() {
 
   statusText.textContent = 'Generating subject PNG...';
 
-  const imageBase64 = sourceCanvas.toDataURL('image/png');
+  const formData = new FormData();
+  formData.append('file', loadedImage);
 
-  fetch('https://thumb-ai-backend.vercel.app/api/subject', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ imageBase64 })
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-        statusText.textContent = 'AI failed: ' + data.error;
-        console.log(data.details);
-        return;
-      }
-
-      const resultImg = new Image();
-
-      resultImg.onload = () => {
-        resultCanvas.width = resultImg.width;
-        resultCanvas.height = resultImg.height;
-        resultCtx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
-        resultCtx.drawImage(resultImg, 0, 0);
-        lastMode = 'subject';
-        statusText.textContent = 'Subject PNG generated. Click Download PNG.';
-      };
-
-      resultImg.src = data.image;
-    })
-    .catch(error => {
-      statusText.textContent = 'Backend connection failed.';
-      console.error(error);
+  try {
+    const response = await fetch('http://127.0.0.1:8000/subject', {
+      method: 'POST',
+      body: formData
     });
+
+    if (!response.ok) {
+      statusText.textContent = 'Subject generation failed.';
+      return;
+    }
+
+    const blob = await response.blob();
+    showResult(blob, 'subject');
+  } catch (error) {
+    statusText.textContent = 'Local Python backend is not running.';
+    console.error(error);
+  }
 }
 
-function generateLayer(mode) {
-  statusText.textContent = 'This button is still demo mode. Use Generate Subject for AI.';
-}
-
-function downloadResult() {
+async function generateText() {
   if (!loadedImage) {
-    statusText.textContent = 'Please upload and generate a layer first.';
+    statusText.textContent = 'Please upload a thumbnail first.';
     return;
   }
 
+  statusText.textContent = 'Generating text PNG...';
+
+  const formData = new FormData();
+  formData.append('file', loadedImage);
+
+  try {
+    const response = await fetch('http://127.0.0.1:8000/text', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) {
+      statusText.textContent = 'Text generation failed.';
+      return;
+    }
+
+    const blob = await response.blob();
+    showResult(blob, 'text');
+  } catch (error) {
+    statusText.textContent = 'Local Python backend is not running.';
+    console.error(error);
+  }
+}
+
+function showResult(blob, mode) {
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+
+  img.onload = () => {
+    resultCanvas.width = img.width;
+    resultCanvas.height = img.height;
+    resultCtx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
+    resultCtx.drawImage(img, 0, 0);
+
+    lastMode = mode;
+    statusText.textContent = `${mode}.png generated. Click Download PNG.`;
+
+    URL.revokeObjectURL(url);
+  };
+
+  img.src = url;
+}
+
+function downloadResult() {
   const link = document.createElement('a');
-  link.download = `${lastMode}-thumbnail-layer.png`;
+  link.download = `${lastMode}.png`;
   link.href = resultCanvas.toDataURL('image/png');
   link.click();
-}
-function testTextAPI() {
-  statusText.textContent = 'Connecting to Text API...';
-
-  fetch('https://thumb-ai-backend.vercel.app/api/text')
-    .then(response => response.json())
-    .then(data => {
-      statusText.textContent = data.message;
-      alert(data.message);
-    })
-    .catch(error => {
-      statusText.textContent = 'Text API connection failed.';
-      console.error(error);
-    });
-}
-function testTextAPI() {
-  statusText.textContent = 'Connecting to Text API...';
-
-  fetch('https://thumb-ai-backend.vercel.app/api/text')
-    .then(response => response.json())
-    .then(data => {
-      statusText.textContent = data.message;
-      alert(data.message);
-    })
-    .catch(error => {
-      statusText.textContent = 'Text API connection failed.';
-      console.error(error);
-    });
 }
