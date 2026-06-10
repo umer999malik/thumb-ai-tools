@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thumbnail Layer Separator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <p class="tag">Thumbnail Tool</p>
+      <h1>Separate your thumbnail into Subject, Objects, and Background</h1>
+      <p class="sub">Upload a thumbnail, choose what you want, then download the generated image layer.</p>
+    </section>
+
+    <section class="panel">
+      <label class="upload-box" for="imageInput">
+        <span>Upload Thumbnail</span>
+        <small>PNG, JPG, WEBP supported</small>
+      </label>
+      <input id="imageInput" type="file" accept="image/*" hidden />
+
+      <div class="workspace">
+        <div class="card">
+          <h2>Original Thumbnail</h2>
+          <canvas id="sourceCanvas"></canvas>
+        </div>
+        <div class="card">
+          <h2>Generated Layer</h2>
+          <canvas id="resultCanvas"></canvas>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button id="subjectBtn">Generate Subject</button>
+        <button id="objectsBtn">Generate Objects</button>
+        <button id="backgroundBtn">Generate Background</button>
+        <button id="downloadBtn" class="download">Download PNG</button>
+      </div>
+
+      <p id="status">Upload an image to start.</p>
+    </section>
+
+    <section class="note">
+      <h2>Important</h2>
+      <p>This GitHub Pages version uses browser-side image processing, so it is a demo-style separator. For professional AI-quality background/subject/object extraction, connect this UI to an AI image-segmentation API such as Replicate, Clipdrop, remove.bg, or a custom backend.</p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

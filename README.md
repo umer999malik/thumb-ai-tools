@@ -1,36 +1,27 @@
-# thumb-ai-tools
-Upload a YouTube thumbnail and extract Background, Objects, and Subject into separate images. Built with HTML, CSS, and JavaScript
-# Thumbnail Separator AI
+# Thumbnail Layer Separator Website
 
-A web application that allows users to upload a thumbnail and generate separate images for:
+A simple GitHub Pages website where you can upload a thumbnail and generate separate PNG outputs for:
 
-- Background
-- Objects
 - Subject
+- Objects
+- Background
 
-## Features
+## How to upload on GitHub
 
-- Upload image
-- Preview thumbnail
-- Extract background
-- Extract objects
-- Extract subject
-- Download generated images
-- Responsive design
+1. Create a new GitHub repository.
+2. Upload these files:
+   - `index.html`
+   - `style.css`
+   - `script.js`
+   - `README.md`
+3. Go to repository **Settings**.
+4. Open **Pages**.
+5. Select branch `main` and folder `/root`.
+6. Save.
+7. Your website will go live on GitHub Pages.
 
-## Technologies
+## Important note
 
-- HTML
-- CSS
-- JavaScript
+This is a frontend-only demo. GitHub Pages cannot run private AI models or secure API keys by itself.
 
-## Deployment
-
-Hosted using GitHub Pages.
-
-## Future Improvements
-
-- AI-powered segmentation
-- Automatic object detection
-- Better background removal
-- Multiple image formats
+For real AI-quality subject/background/object separation, connect this UI to an AI backend or API such as Replicate, Clipdrop, remove.bg, or your own segmentation server.

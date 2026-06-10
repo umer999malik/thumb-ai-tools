@@ -1,0 +1,75 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, Arial, sans-serif;
+  background: radial-gradient(circle at top, #272044, #0c0c12 55%);
+  color: white;
+  min-height: 100vh;
+}
+.app { width: min(1120px, 94%); margin: auto; padding: 40px 0; }
+.hero { text-align: center; margin-bottom: 28px; }
+.tag {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.1);
+  color: #c9c3ff;
+  font-weight: 700;
+}
+h1 { font-size: clamp(32px, 6vw, 68px); line-height: .95; margin: 16px 0; }
+.sub { color: #c9c9d8; font-size: 18px; }
+.panel, .note {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 26px;
+  padding: 24px;
+  box-shadow: 0 24px 90px rgba(0,0,0,.35);
+}
+.upload-box {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-height: 120px;
+  border: 2px dashed rgba(255,255,255,.28);
+  border-radius: 20px;
+  cursor: pointer;
+  background: rgba(255,255,255,.06);
+  transition: .2s;
+}
+.upload-box:hover { transform: translateY(-2px); background: rgba(255,255,255,.1); }
+.upload-box span { font-size: 24px; font-weight: 800; }
+.upload-box small { color: #bfc0ce; }
+.workspace { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 22px; }
+.card {
+  background: rgba(0,0,0,.24);
+  border-radius: 20px;
+  padding: 16px;
+  overflow: hidden;
+}
+.card h2 { margin: 0 0 12px; font-size: 18px; }
+canvas {
+  width: 100%;
+  min-height: 260px;
+  background: #15151d;
+  border-radius: 14px;
+}
+.buttons { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+button {
+  border: 0;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: #7c5cff;
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+  transition: .2s;
+}
+button:hover { transform: translateY(-2px); filter: brightness(1.08); }
+button.download { background: #23c483; }
+#status { color: #d4d4e5; margin-bottom: 0; }
+.note { margin-top: 22px; color: #d5d5df; }
+.note h2 { color: white; margin-top: 0; }
+@media (max-width: 780px) {
+  .workspace { grid-template-columns: 1fr; }
+  .buttons button { flex: 1 1 100%; }
+}
