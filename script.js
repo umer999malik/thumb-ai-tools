@@ -10,7 +10,7 @@ let lastMode = 'layer';
 
 imageInput.addEventListener('change', handleUpload);
 document.getElementById('subjectBtn').addEventListener('click', generateSubjectAI);
-document.getElementById('objectsBtn').addEventListener('click', testTextAPI);
+document.getElementById('objectsBtn').addEventListener('click', generateTextPNG);
 document.getElementById('backgroundBtn').addEventListener('click', () => generateLayer('background'));
 document.getElementById('downloadBtn').addEventListener('click', downloadResult);
 
@@ -126,4 +126,45 @@ function testTextAPI() {
       statusText.textContent = 'Text API connection failed.';
       console.error(error);
     });
+}
+function generateTextPNG() {
+  if (!loadedImage) {
+    statusText.textContent = 'Please upload a thumbnail first.';
+    return;
+  }
+
+  statusText.textContent = 'Generating text PNG...';
+
+  sourceCtx.drawImage(loadedImage, 0, 0, sourceCanvas.width, sourceCanvas.height);
+
+  const imageData = sourceCtx.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height);
+  const data = imageData.data;
+
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+
+    const brightness = (r + g + b) / 3;
+    const saturation = Math.max(r, g, b) - Math.min(r, g, b);
+
+    const isWhiteText = brightness > 180;
+    const isYellowText = r > 170 && g > 130 && b < 120;
+    const isRedText = r > 160 && g < 90 && b < 90;
+    const isBlueText = b > 150 && r < 120;
+
+    const keep = isWhiteText || isYellowText || isRedText || isBlueText || saturation > 120;
+
+    if (!keep) {
+      data[i + 3] = 0;
+    }
+  }
+
+  resultCanvas.width = sourceCanvas.width;
+  resultCanvas.height = sourceCanvas.height;
+  resultCtx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
+  resultCtx.putImageData(imageData, 0, 0);
+
+  lastMode = 'text';
+  statusText.textContent = 'Text PNG generated. Click Download PNG.';
 }
